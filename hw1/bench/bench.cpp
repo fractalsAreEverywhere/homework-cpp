@@ -1,34 +1,27 @@
-// Тесты производительности: mySort против std::sort.
-// Собираются в Release (/O2) БЕЗ санитайзера: он сильно замедляет программу.
-
 #include <algorithm>
-#include <chrono>     // замер времени
-#include <functional> // std::less
-#include <iomanip>    // std::setw, std::fixed, std::setprecision
+#include <chrono>
+#include <functional>
+#include <iomanip>
 #include <iostream>
 #include <random>
 #include <vector>
 
 #ifdef _WIN32
-#define NOMINMAX      // иначе windows.h ломает std::min
-#include <windows.h>  // SetConsoleOutputCP: чтобы русский текст в консоли Windows не превращался в кракозябры
+#define NOMINMAX
+#include <windows.h>
 #endif
 
 #include "my_sort.h"
 #include "point.h"
 
-// Каждый замер повторяем несколько раз и берём лучшее время:
-// так меньше влияют случайные помехи (другие программы, кэш и т. п.).
 const int REPEATS = 5;
 
-// Замер mySort. original передаётся по константной ссылке (без копии).
-// Перед каждым замером делаем свежую копию данных: копирование происходит
-// ДО запуска таймера и в замер не попадает.
+// Лучшее время mySort из REPEATS запусков на свежих копиях данных, в мс.
 template <typename T, typename Compare>
 double timeMySort(const std::vector<T>& original, Compare comp) {
     double best = 1e18;
     for (int r = 0; r < REPEATS; r++) {
-        std::vector<T> data = original;  // свежая неотсортированная копия
+        std::vector<T> data = original;
 
         auto start = std::chrono::steady_clock::now();
         mySort(data.begin(), data.end(), comp);
@@ -40,7 +33,7 @@ double timeMySort(const std::vector<T>& original, Compare comp) {
     return best;
 }
 
-// То же самое для std::sort.
+// Лучшее время std::sort из REPEATS запусков на свежих копиях данных, в мс.
 template <typename T, typename Compare>
 double timeStdSort(const std::vector<T>& original, Compare comp) {
     double best = 1e18;
@@ -59,6 +52,7 @@ double timeStdSort(const std::vector<T>& original, Compare comp) {
 
 std::mt19937 gen(42);
 
+// Возвращает n случайных int.
 std::vector<int> randomInts(int n) {
     std::uniform_int_distribution<int> dist(-1000000000, 1000000000);
     std::vector<int> v;
@@ -68,6 +62,7 @@ std::vector<int> randomInts(int n) {
     return v;
 }
 
+// Возвращает n случайных точек в квадрате [-1000, 1000].
 std::vector<Point> randomPoints(int n) {
     std::uniform_real_distribution<double> dist(-1000.0, 1000.0);
     std::vector<Point> v;
@@ -77,6 +72,7 @@ std::vector<Point> randomPoints(int n) {
     return v;
 }
 
+// Печатает заголовок таблицы.
 void printHeader() {
     std::cout << std::setw(10) << "n"
               << std::setw(16) << "mySort, ms"
@@ -84,6 +80,7 @@ void printHeader() {
               << std::setw(20) << "mySort / std::sort" << "\n";
 }
 
+// Печатает строку таблицы: размер, оба времени и их отношение.
 void printRow(int n, double mine, double standard) {
     std::cout << std::setw(10) << n
               << std::setw(16) << mine
@@ -91,9 +88,10 @@ void printRow(int n, double mine, double standard) {
               << std::setw(20) << mine / standard << "\n";
 }
 
+// Замеры на случайных int и Point и на уже отсортированном массиве.
 int main() {
 #ifdef _WIN32
-    SetConsoleOutputCP(65001);  // 65001 = кодировка UTF-8
+    SetConsoleOutputCP(65001);
 #endif
     std::cout << std::fixed << std::setprecision(3);
     std::vector<int> sizes = {1000, 10000, 100000, 1000000};
@@ -112,9 +110,6 @@ int main() {
         printRow(n, timeMySort(data, closerToOrigin), timeStdSort(data, closerToOrigin));
     }
 
-    // Отдельный замер: уже отсортированный массив против случайного того же размера.
-    // У quicksort с плохим выбором опорного элемента отсортированный массив
-    // даёт O(n^2). У merge sort время должно быть не хуже, чем на случайных данных.
     const int n = 100000;
     std::vector<int> randomData = randomInts(n);
     std::vector<int> sortedData = randomData;
