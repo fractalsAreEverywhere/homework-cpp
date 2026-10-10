@@ -19,8 +19,10 @@ int failedCount = 0;  // сколько тестов не прошло
 
 // Печатает результат одного теста.
 void report(const std::string& name, bool ok) {
-    std::cout << (ok ? "[ OK ] " : "[FAIL] ") << name << "\n";
-    if (!ok) {
+    if (ok) {
+        std::cout << "[ OK ] " << name << "\n";
+    } else {
+        std::cout << "[FAIL] " << name << "\n";
         failedCount++;
     }
 }
