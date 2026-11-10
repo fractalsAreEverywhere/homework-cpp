@@ -11,4 +11,6 @@ if(MSVC)
     string(REPLACE "/RTC1" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
 
+enable_testing()
 add_subdirectory(hw1)
+add_subdirectory(hw2)
