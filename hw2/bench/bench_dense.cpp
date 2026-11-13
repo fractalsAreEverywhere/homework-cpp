@@ -1,4 +1,4 @@
-#include "../hw2/matrix.h"
+#include "../hw2/dense_matrix.h"
 #include <chrono>
 #include <iomanip>
 #include <iostream>
@@ -15,7 +15,7 @@ int main() {
         DenseMatrix a(size, size);
         DenseMatrix b(size, size);
 
-        // Заполнение не входит в замер времени умножения.
+        // Заполнение не входит в замер времени умножения
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {
                 a.set(i, j, (i + j) % 10 + 1);
@@ -38,7 +38,7 @@ int main() {
             auto optimizedFinish = std::chrono::steady_clock::now();
             optimizedTotal += std::chrono::duration<double>(optimizedFinish - optimizedStart).count();
 
-            // Читаем результаты вне измеряемых участков.
+            // Читаем результаты вне измеряемых участков
             checksum += result.get(0, 0) + optimizedResult.get(0, 0);
         }
         double naiveAverage = naiveTotal / repetitions;

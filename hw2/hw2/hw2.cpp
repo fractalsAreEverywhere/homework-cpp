@@ -1,5 +1,7 @@
-#include "matrix.h"
+#include "dense_matrix.h"
 #include <cassert>
+#include <iostream>
+#include <stdexcept>
 
 int main() {
 	DenseMatrix e(2, 3);

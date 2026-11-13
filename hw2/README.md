@@ -4,7 +4,9 @@
 
 ## Состав
 
-- `hw2/matrix.h` — интерфейс матрицы и плотная реализация.
+- `hw2/matrix.h` — абстрактный класс Matrix.
+- `hw2/dense_matrix.h` — поля и объявления методов DenseMatrix.
+- `hw2/dense_matrix.cpp` — тела методов DenseMatrix.
 - `hw2/hw2.cpp` — демонстрационная программа.
 - `tests/test_dense.cpp` — проверки корректности.
 - `bench/bench_dense.cpp` — измерение производительности.
