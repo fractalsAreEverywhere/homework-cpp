@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "debug-asan",
+      "displayName": "Debug — тесты с AddressSanitizer",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/debug-asan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "HW3_ENABLE_ASAN": "ON"
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "Release — бенчмарк без санитайзера",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "HW3_ENABLE_ASAN": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "debug-asan", "configurePreset": "debug-asan" },
+    { "name": "release", "configurePreset": "release", "targets": ["hw3_bench"] }
+  ],
+  "testPresets": [
+    { "name": "debug-asan", "configurePreset": "debug-asan", "output": { "outputOnFailure": true } }
+  ]
+}
